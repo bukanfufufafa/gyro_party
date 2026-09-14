@@ -1,0 +1,60 @@
+using UnityEngine;
+
+public class KnifeCut : MonoBehaviour
+{
+    [Header("Pengaturan")]
+    public float moveDistance = 0.5f;
+    public float moveSpeed = 5f;
+    public KeyCode cutKey = KeyCode.Space;
+
+    private Vector3 startPosition;
+    private bool cutting = false;
+
+    void Start()
+    {
+        startPosition = transform.position;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Fruit fruit = other.GetComponentInParent<Fruit>();
+
+        if (fruit != null)
+        {
+            fruit.CutPart(other);
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(cutKey))
+        {
+            cutting = true;
+        }
+
+        if (cutting)
+        {
+            Vector3 targetPosition =
+                startPosition + Vector3.down * moveDistance;
+
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                targetPosition,
+                moveSpeed * Time.deltaTime
+            );
+
+            if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
+            {
+                cutting = false;
+            }
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                startPosition,
+                moveSpeed * Time.deltaTime
+            );
+        }
+    }
+}
