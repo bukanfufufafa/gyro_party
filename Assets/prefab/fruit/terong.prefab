@@ -92,7 +92,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3694151568114374371}
-  - component: {fileID: 1841418484309029557}
   m_Layer: 0
   m_Name: terong
   m_TagString: Untagged
@@ -118,19 +117,6 @@ Transform:
   - {fileID: 7339890200461484076}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1841418484309029557
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2949111415599666515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cutDistance: 1
 --- !u!1 &6012332637397582438
 GameObject:
   m_ObjectHideFlags: 0
@@ -144,6 +130,7 @@ GameObject:
   - component: {fileID: 3406287199054059629}
   - component: {fileID: 5340114019371791910}
   - component: {fileID: 6051185059593116258}
+  - component: {fileID: 4607859547417276982}
   m_Layer: 0
   m_Name: Cube.002
   m_TagString: Untagged
@@ -261,10 +248,24 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4607859547417276982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6012332637397582438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cutDistanceX: 0.2
+  scoreGiven: 1
 --- !u!1 &6815994391881209659
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,6 +279,7 @@ GameObject:
   - component: {fileID: 2931729826768469063}
   - component: {fileID: 7054304625836538490}
   - component: {fileID: 4926844124965251048}
+  - component: {fileID: 3167536769261157381}
   m_Layer: 0
   m_Name: Cube.003
   m_TagString: Untagged
@@ -373,7 +375,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -399,6 +401,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8678823145569952518, guid: 514ca3386a06a1f4f8f25df8d1894ec5, type: 3}
+--- !u!114 &3167536769261157381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6815994391881209659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cutDistanceX: 0.2
+  scoreGiven: 1
 --- !u!1 &7051732717483742365
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,6 +428,7 @@ GameObject:
   - component: {fileID: 4393649359326779962}
   - component: {fileID: 262077703826024911}
   - component: {fileID: 1121882274191992958}
+  - component: {fileID: 75721521958004043}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -508,7 +525,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -534,3 +551,17 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5495902117074765545, guid: 514ca3386a06a1f4f8f25df8d1894ec5, type: 3}
+--- !u!114 &75721521958004043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7051732717483742365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cutDistanceX: 0.2
+  scoreGiven: 1

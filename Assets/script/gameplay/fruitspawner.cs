@@ -1,12 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class fruitspawner : MonoBehaviour
 {
     [Header("Objects")]
     public GameObject[] objectPrefabs;
-    public int maxObjects = 10;
+
+    [Header("Spawner")]
+    public fruitspawner otherSpawner;
 
     [Header("Target")]
     public Transform target;
@@ -17,21 +18,11 @@ public class fruitspawner : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 3f;
 
-    private List<GameObject> objectPool = new List<GameObject>();
-
-    void Start()
+    private void Start()
     {
-        // Membuat object pool dari semua prefab
-        for (int i = 0; i < maxObjects; i++)
-        {
-            // Pilih prefab secara random
-            GameObject randomPrefab = objectPrefabs[Random.Range(0, objectPrefabs.Length)];
-
-            GameObject obj = Instantiate(randomPrefab);
-            obj.SetActive(false);
-
-            objectPool.Add(obj);
-        }
+        // Hanya spawner utama yang menjalankan random
+        if (otherSpawner != null && transform.GetInstanceID() > otherSpawner.transform.GetInstanceID())
+            return;
 
         StartCoroutine(SpawnObject());
     }
@@ -40,47 +31,44 @@ public class fruitspawner : MonoBehaviour
     {
         while (true)
         {
-            Spawn();
+            SpawnPair();
 
             yield return new WaitForSeconds(spawnInterval);
         }
     }
 
-    void Spawn()
+    void SpawnPair()
     {
-        foreach (GameObject obj in objectPool)
+        // Pilih SATU objek secara random
+        int randomIndex = Random.Range(0, objectPrefabs.Length);
+
+        // Spawn untuk spawner ini
+        Spawn(objectPrefabs[randomIndex]);
+
+        // Spawn untuk spawner satunya
+        if (otherSpawner != null)
         {
-            if (!obj.activeSelf)
-            {
-                Fruit fruit = obj.GetComponent<Fruit>();
-
-                if (fruit != null)
-                {
-                    fruit.ResetFruit();
-                }
-
-                // Pindahkan buah ke posisi spawner
-                obj.transform.position = transform.position;
-
-                // Aktifkan buah
-                obj.SetActive(true);
-
-                return;
-            }
+            otherSpawner.Spawn(objectPrefabs[randomIndex]);
         }
     }
 
-    void Update()
+    void Spawn(GameObject prefab)
     {
-        foreach (GameObject obj in objectPool)
-        {
-            if (!obj.activeSelf)
-                continue;
+        GameObject obj = Instantiate(
+            prefab,
+            transform.position,
+            Quaternion.identity
+        );
 
-            // Target hanya menggunakan posisi X
+        StartCoroutine(MoveObject(obj));
+    }
+
+    IEnumerator MoveObject(GameObject obj)
+    {
+        while (obj != null)
+        {
             float targetX = target.position.x;
 
-            // Bergerak hanya pada sumbu X
             Vector3 newPosition = obj.transform.position;
 
             newPosition.x = Mathf.MoveTowards(
@@ -91,11 +79,13 @@ public class fruitspawner : MonoBehaviour
 
             obj.transform.position = newPosition;
 
-            // Jika sudah sampai target
             if (Mathf.Approximately(obj.transform.position.x, targetX))
             {
-                obj.SetActive(false);
+                Destroy(obj);
+                yield break;
             }
+
+            yield return null;
         }
     }
 }

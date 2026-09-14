@@ -7,8 +7,13 @@ public class KnifeCut : MonoBehaviour
     public float moveSpeed = 5f;
     public KeyCode cutKey = KeyCode.Space;
 
+    [Header("Stun")]
+    public float stunt = 0f;
+
     private Vector3 startPosition;
     private bool cutting = false;
+
+    public int score;
 
     void Start()
     {
@@ -21,12 +26,25 @@ public class KnifeCut : MonoBehaviour
 
         if (fruit != null)
         {
-            fruit.CutPart(other);
+            // fruit.CutPart(other);
         }
     }
 
     void Update()
     {
+        // Kalau sedang stun, jangan lakukan apa-apa
+        if (stunt > 0)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                startPosition,
+                moveSpeed * Time.deltaTime
+            );
+
+            stunt -= Time.deltaTime;
+            return;
+        }
+
         if (Input.GetKeyDown(cutKey))
         {
             cutting = true;

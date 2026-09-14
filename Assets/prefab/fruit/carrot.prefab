@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8040140576150724085}
   - component: {fileID: 585033155715296496}
   - component: {fileID: 8750262556978500354}
+  - component: {fileID: 9147873873728647497}
   m_Layer: 0
   m_Name: Cube.003
   m_TagString: Untagged
@@ -130,10 +131,24 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &9147873873728647497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252294257077673961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cutDistanceX: 0.2
+  scoreGiven: 1
 --- !u!1 &1372374154552982467
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,6 +245,7 @@ GameObject:
   - component: {fileID: 1580547745447747631}
   - component: {fileID: 3604042008674114564}
   - component: {fileID: 5640304160151619455}
+  - component: {fileID: 2646282100894170118}
   m_Layer: 0
   m_Name: Cube.002
   m_TagString: Untagged
@@ -325,7 +341,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -351,6 +367,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -1550514412580984892, guid: e3b8bb6a593e14840bcf4c5eeaff4101, type: 3}
+--- !u!114 &2646282100894170118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2079513624189917381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cutDistanceX: 0.2
+  scoreGiven: 1
 --- !u!1 &2779928155925795760
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,7 +390,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1750035699024717402}
-  - component: {fileID: 4377810574668812926}
   m_Layer: 0
   m_Name: carrot
   m_TagString: Untagged
@@ -386,19 +415,6 @@ Transform:
   - {fileID: 1607063956499503278}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4377810574668812926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2779928155925795760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cutDistance: 1
 --- !u!1 &3895321338468727475
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,6 +428,7 @@ GameObject:
   - component: {fileID: 4479551256552849069}
   - component: {fileID: 156447452621649282}
   - component: {fileID: 9062962981142125587}
+  - component: {fileID: 4174529367172547911}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -530,7 +547,21 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4174529367172547911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3895321338468727475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cutDistanceX: 0.2
+  scoreGiven: 1

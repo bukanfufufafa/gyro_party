@@ -2,65 +2,62 @@ using UnityEngine;
 
 public class Fruit : MonoBehaviour
 {
-    private Vector3[] originalPositions;
-    private Quaternion[] originalRotations;
+    private Rigidbody rb;
 
-    private Rigidbody[] rigidbodies;
+    //public GameObject player1;
+    //public GameObject player2;
 
-    [Header("Cut Effect")]
-    public float cutDistance = 0.2f;
+    public float cutDistanceX = 0.2f;
+    public int scoreGiven;
+    public bool cutted = false;
 
-    void Awake()
+    private void Start()
     {
-        int childCount = transform.childCount;
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
+    }
 
-        originalPositions = new Vector3[childCount];
-        originalRotations = new Quaternion[childCount];
-
-        rigidbodies = GetComponentsInChildren<Rigidbody>(true);
-
-        // Simpan posisi dan rotasi awal setiap child
-        for (int i = 0; i < childCount; i++)
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
         {
-            Transform child = transform.GetChild(i);
+            if (other.CompareTag("Player"))
+            {
+                KnifeCut knife = other.GetComponentInParent<KnifeCut>();
 
-            originalPositions[i] = child.localPosition;
-            originalRotations[i] = child.localRotation;
-        }
+                if (knife != null)
+                {
+                    
+                    if (!cutted)
+                    {
+                        knife.score += scoreGiven;
+                    }
+                    cutted = true;
 
-        // Semua Rigidbody tetap kinematic
-        foreach (Rigidbody rb in rigidbodies)
-        {
-            rb.isKinematic = true;
+
+                }
+                detach();
+            }
+
+
         }
     }
 
-    public void ResetFruit()
+
+        private void Update()
     {
-        // Reset posisi dan rotasi child
-        for (int i = 0; i < transform.childCount; i++)
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            Transform child = transform.GetChild(i);
-
-            child.localPosition = originalPositions[i];
-            child.localRotation = originalRotations[i];
-        }
-
-        // Pastikan semua Rigidbody tetap kinematic
-        foreach (Rigidbody rb in rigidbodies)
-        {
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
+            rb.isKinematic = false;
+            rb.useGravity = true;
         }
     }
 
-    public void CutPart(Collider hitCollider)
+    public void detach()
     {
-        // Collider yang terkena pisau
-        Transform part = hitCollider.transform;
-
-        // Geser part sedikit ke arah X
-        part.localPosition += Vector3.right * cutDistance;
+        rb.isKinematic = false;
+        rb.useGravity = true;
+        transform.localPosition += Vector3.right * cutDistanceX;
     }
 }

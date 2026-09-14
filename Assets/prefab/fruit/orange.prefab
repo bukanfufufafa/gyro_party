@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8630312173792084165}
-  - component: {fileID: 6376837992689656280}
   m_Layer: 0
   m_Name: orange
   m_TagString: Untagged
@@ -25,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1054326993243322987}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 728, y: 715.37, z: -883.22}
   m_LocalScale: {x: 0.13266, y: 0.13266, z: 0.13266}
   m_ConstrainProportionsScale: 1
@@ -33,20 +32,7 @@ Transform:
   - {fileID: 3366964392414875112}
   - {fileID: 7606327395667269086}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
---- !u!114 &6376837992689656280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1054326993243322987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cutDistance: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1105634198385124404
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,6 +46,7 @@ GameObject:
   - component: {fileID: 2568249506844975232}
   - component: {fileID: 5378198605275623360}
   - component: {fileID: 8600492681404693965}
+  - component: {fileID: 7899395140385485887}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -75,13 +62,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1105634198385124404}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8630312173792084165}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: -90}
 --- !u!33 &7661698987587530392
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -177,10 +164,24 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7899395140385485887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105634198385124404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cutDistanceX: 0.2
+  scoreGiven: 1
 --- !u!1 &1409693492762893086
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,6 +195,7 @@ GameObject:
   - component: {fileID: 6563942366968172375}
   - component: {fileID: 7761028819414090264}
   - component: {fileID: 1566077838166071912}
+  - component: {fileID: 1779693040577009125}
   m_Layer: 0
   m_Name: Cube.002
   m_TagString: Untagged
@@ -209,7 +211,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409693492762893086}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
@@ -217,7 +219,7 @@ Transform:
   - {fileID: 2270484001838037993}
   - {fileID: 1161620610570938486}
   m_Father: {fileID: 8630312173792084165}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: -90}
 --- !u!33 &8283680178532133200
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -313,10 +315,24 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1779693040577009125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409693492762893086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f839d4cfde586428fa055e72d2ac43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cutDistanceX: 0.2
+  scoreGiven: 1
 --- !u!1 &2379740132230771473
 GameObject:
   m_ObjectHideFlags: 0
