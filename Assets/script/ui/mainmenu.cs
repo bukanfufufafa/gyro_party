@@ -2,6 +2,7 @@ using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class mainmenu : MonoBehaviour
 {
@@ -13,24 +14,7 @@ public class mainmenu : MonoBehaviour
     
     void Start()
     {
-        if (gamemode != null)
-        {
-            gamemode.SetActive(false);
-        }
-        if (settings != null)
-        {
-            settings.SetActive(false);
-        }
-        if (credit != null)
-        {
-            credit.SetActive(false);
-        }
-        if (quit != null)
-        {
-            quit.SetActive(false);
-        }
-
-        activateGamemode();
+        
     }
 
     // Update is called once per frame
@@ -39,48 +23,18 @@ public class mainmenu : MonoBehaviour
         
     }
 
-    public void activateGamemode()
+    public void cutting()
     {
-        if(gamemode != null)
-        {
-            gamemode.SetActive(true);
-            settings.SetActive(false);
-            credit.SetActive(false);
-            quit.SetActive(false);
-        }
+        SceneManager.LoadScene("cutting");
     }
 
-    public void activateSetting()
+    public void fishing()
     {
-        if (settings != null)
-        {
-            gamemode.SetActive(false);
-            settings.SetActive(true);
-            credit.SetActive(false);
-            quit.SetActive(false);
-        }
+        SceneManager.LoadScene("fishing");
     }
 
-    public void activateCredit()
+    public void plane()
     {
-        if (credit != null)
-        {
-            gamemode.SetActive(false);
-            settings.SetActive(false);
-            credit.SetActive(true);
-            quit.SetActive(false);
-        }
+        SceneManager.LoadScene("airplane");
     }
-
-    public void activateQuit()
-    {
-        if (quit != null)
-        {
-            gamemode.SetActive(false);
-            settings.SetActive(false);
-            credit.SetActive(false);
-            quit.SetActive(true);
-        }
-    }
-
 }
