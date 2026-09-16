@@ -8,4 +8,160 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/Audio/Audio.unity
+    guid: 5367027ce2f25f54c87033bdf6604607
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/Bandwidth/Bandwidth.unity
+    guid: 7b937b0c9fd657748b097f42c131679c
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/ChangeCodecs/ChangeCodecs.unity
+    guid: e9c13f6cf7516b24495a3ed0779dcc70
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/DataChannel/DataChannel.unity
+    guid: 7bdf6556dbdb70946924a04ec1fac2df
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/E2ELatency/E2ELatency.unity
+    guid: d85785bc886b68348b04331dab320a33
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/Following.unity
+    guid: ae5e9d334639a484786a9badbf5b387a
+  - enabled: 1
+    path: Assets/LeanTween/Testing/FollowingTests.unity
+    guid: e89d6da1c030f4e238f49a56fff94910
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralAdvancedTechniques.unity
+    guid: ed31b9589883b4d19a6bc0f50d57edec
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralBasic.unity
+    guid: 733435822951d4505bbf44759df1613d
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralBasics2d.unity
+    guid: db7afcf97d5f646b9986f7e84ca1ac68
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralCameraShake.unity
+    guid: a99971c1311c6405d8d2897f3f42ad32
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralEasingTypes.unity
+    guid: 721616f4ed65645df9e1919c91909eb8
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralEvents.unity
+    guid: 7e603302e334b4bd0bef351e0f1e050c
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralSequencer.unity
+    guid: 28ab900ace00b47e39ad8fef65f3170a
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralSimpleUi.unity
+    guid: 7534096fc06e2452687df015b87d7cfa
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/GeneralUISpace.unity
+    guid: 698925ae1198741f09200bbe0cbbff86
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/LogoCinematic.unity
+    guid: 68ea271dda32c4c209e4419b091b2288
+  - enabled: 1
+    path: Assets/Scenes/mainmenu.unity
+    guid: 28454f2160110d647b6c44fd06bc1c75
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/MediaStream/MediaStream.unity
+    guid: 6a553b4932fd56b45ab503ea0f990e2d
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/Menu/Menu.unity
+    guid: f74260b9867fa524a9677fe64004f4f9
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/MultiAudioReceive/MultiAudioReceive.unity
+    guid: f2c574ba8fa6e413d80d51085132df4f
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/MultiplePeerConnections/MultiplePeerConnections.unity
+    guid: ad11cc7c597c0e94d8cf4db5a3ebde11
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/MultiVideoReceive/MultiVideoReceive.unity
+    guid: 2849cfdf020a0464bac96e5c43bd6726
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/MungeSDP/MungeSDP.unity
+    guid: b4115d77431845442867699b94fc0232
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/PathBezier.unity
+    guid: 173c35c3d8996463384732672075da90
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/PathBezier2d.unity
+    guid: 363f43ea320c54cd7ade42f54f59c232
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/PathSpline2d.unity
+    guid: b5daea63c1cc14d709cb8f5dc7d19173
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/PathSplineEndless.unity
+    guid: 2a7ce2e628c14472a9fb2af42917d270
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/PathSplinePerformance.unity
+    guid: 924b0d7269de44f8398015b04e7ba081
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/PathSplines.unity
+    guid: f7851b12d34d54ef0bc16d6d34318d75
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/PathSplineTrack.unity
+    guid: 0e3bee443b13540cc845f5476188d8b1
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/PeerConnection/PeerConnection.unity
+    guid: b6162a25306134a9ea9c9c7556e5f136
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/PerfectNegotiation/PerfectNegotiation.unity
+    guid: 230a6bb1d81354b0988a940b657c5674
+  - enabled: 1
+    path: Assets/LeanTween/Testing/PerformanceTests.unity
+    guid: d2b647bbd8e034971b76756fb286b6c5
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/ReplaceTrack/ReplaceTrack.unity
+    guid: 9607119e15db6cb40a49916fb3a70f9f
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/Stats/Stats.unity
+    guid: 3f6769738bc91f848b8242f87cc02275
+  - enabled: 1
+    path: Assets/LeanTween/Testing/Testing240.unity
+    guid: 1a26c48b8152c4a3fb944e75d8a3fad1
+  - enabled: 1
+    path: Assets/LeanTween/Testing/Testing243.unity
+    guid: 45c7976860cf7456f836999a7447f343
+  - enabled: 1
+    path: Assets/LeanTween/Testing/Testing246.unity
+    guid: 07b38eaa49ca34ee3b10b3bcbd4ab991
+  - enabled: 1
+    path: Assets/LeanTween/Testing/Testing248.unity
+    guid: 1b3a161a91c7141faa6806d504d85df6
+  - enabled: 1
+    path: Assets/LeanTween/Testing/TestingDescr.unity
+    guid: 5183fb754722d4edba59e1f7ab972186
+  - enabled: 1
+    path: Assets/LeanTween/Testing/TestingIssue.unity
+    guid: ed20e1ac0146c4887b0e31f3342ade8e
+  - enabled: 1
+    path: Assets/LeanTween/Testing/TestingMaxTweens.unity
+    guid: b9ba0a1a063d840ceab93a6bca146df1
+  - enabled: 1
+    path: Assets/LeanTween/Testing/TestingOptionalCancel.unity
+    guid: 7f5ea09e01a334a3b9942b6ef860bedf
+  - enabled: 1
+    path: Assets/LeanTween/Testing/TestingRotate.unity
+    guid: 88db57df867844767a1535ae3671ae36
+  - enabled: 1
+    path: Assets/LeanTween/Testing/TestingSceneSwitching.unity
+    guid: 2eedc500c8611491798b66b64c118120
+  - enabled: 1
+    path: Assets/LeanTween/Testing/TestingSequencer.unity
+    guid: 086642bd5cf3543fda601bb4ac7c0fb1
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/TestingUnitTests.unity
+    guid: 22e1e363584e94ef6a9661ede1f4e358
+  - enabled: 1
+    path: Assets/LeanTween/Examples/Scenes/TestingZLegacy.unity
+    guid: 9d3c1732ee5ca4e86bf2497c4404c656
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/TrickleIce/TrickleIce.unity
+    guid: c30f333934a8e80499b6d8bd89593ae8
+  - enabled: 1
+    path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/VideoReceive/VideoReceive.unity
+    guid: 0ff78d93b95d29044b16be8c4cce1c6b
+  - enabled: 1
+    path: Assets/Scenes/gameplayroot.unity
+    guid: 0b2c972dbc8bec54d864125de30dc204
   m_configObjects: {}
