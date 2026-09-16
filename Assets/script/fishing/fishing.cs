@@ -31,6 +31,8 @@ public class fishing : MonoBehaviour
     private Quaternion rodStartRotation;
     private bool rodPulling = false;
 
+    public int score;
+
 
     private void Start()
     {
@@ -202,7 +204,7 @@ public class fishing : MonoBehaviour
                 "Ikan didapat! Score: "
                 + caughtFish.score
             );
-
+            score += caughtFish.score;
             Destroy(caughtFish.gameObject);
             caughtFish = null;
         }
