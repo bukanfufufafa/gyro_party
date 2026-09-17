@@ -19,14 +19,22 @@ public class football : MonoBehaviour
     private Vector3 initialBallPosition;
     private Quaternion initialBallRotation;
 
+    // [SerializeField] private GameplayManagerProxy gameplayManagerProxy;
+    
+
+
     void Start()
     {
-        player1Text.text = "0";
-        player2Text.text = "0";
+        GameplayManagerProxy gameplayManagerProxy = GameObject.Find("Gameplay Manager Proxy").GetComponent<GameplayManagerProxy>();
+        gameplayManagerProxy.OnStartGame += (_, _) =>
+      {
+          player1Text.text = "0";
+          player2Text.text = "0";
 
 
-        initialBallPosition = ball.transform.position;
-        initialBallRotation = ball.transform.rotation;
+          initialBallPosition = ball.transform.position;
+          initialBallRotation = ball.transform.rotation;
+      };
     }
 
     private void OnTriggerEnter(Collider other)

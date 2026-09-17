@@ -15,8 +15,8 @@ using UnityEngine;
 public class RelayService
 {
     // Singleton =========================================================
-    private static readonly Lazy<RelayService> _lazyInstance =
-       new Lazy<RelayService>(() => new RelayService());
+    private static readonly ThreadSafeResettableLazy<RelayService> _lazyInstance =
+       new ThreadSafeResettableLazy<RelayService>(() => new RelayService());
 
     public static RelayService Instance => _lazyInstance.Value;
     private RelayService() { }
@@ -51,6 +51,13 @@ public class RelayService
     // Private Properties =========================================================
 
     // Public Functions =========================================================
+
+    public async UniTask Reset()
+    {
+        await Shutdown();
+        ControllerService.Instance.Reset();
+        _lazyInstance.Reset();
+    }
 
     public async UniTask<bool> Setup()
     {
@@ -289,6 +296,12 @@ public class RelayService
                         RelayConnectControllerRequest request = message.Json<RelayConnectControllerRequest>();
                         HandleConnectControllerMessage(request);
                     }
+                    else if (id == (ushort)RelaySystemMessageId.DisconnectController) // Disconnect Controller Request.
+                    {
+                        Debug.Log("RelayService: Dapat request ConnectController");
+                        RelayConnectControllerRequest request = message.Json<RelayConnectControllerRequest>();
+                        HandleConnectControllerMessage(request);
+                    }
                     else // Regular message.
                     {
                         if (messageListeners.ContainsKey(id))
@@ -410,6 +423,11 @@ public class RelayService
                 _ = SendJson((ushort)RelaySystemMessageId.ConnectController, response, cts.Token);
             }
         });
+    }
+
+    private void HandleDisconnectControllerRequest(RelayDisconnectControllerRequest request)
+    {
+        
     }
 
     // Private Functions =========================================================

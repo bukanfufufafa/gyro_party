@@ -11,8 +11,12 @@ public class Fruit : MonoBehaviour
     public int scoreGiven;
     public bool cutted = false;
 
+    bool started;
+
+
     private void Start()
     {
+        started = true;
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
         rb.useGravity = false;
@@ -28,7 +32,7 @@ public class Fruit : MonoBehaviour
 
                 if (knife != null)
                 {
-                    
+
                     if (!cutted)
                     {
                         knife.score += scoreGiven;
@@ -39,14 +43,14 @@ public class Fruit : MonoBehaviour
                 }
                 detach();
             }
-
-
         }
     }
 
 
-        private void Update()
+    private void Update()
     {
+        if (!started) return;
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             rb.isKinematic = false;

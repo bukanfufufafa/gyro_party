@@ -8,6 +8,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 #nullable enable
 
@@ -35,6 +36,11 @@ public class GameplayManager : MonoBehaviour
 
     [SerializeField] private Volume volume;
     private ColorAdjustments? colorAdjustments;
+    private LensDistortion? lensDistortion;
+
+    private GameObject? tutorialContent;
+
+    private bool isPaused;
 
     [SerializeField] private GameObject tutorialScreen;
     [SerializeField] private GameObject countdownScreen;
@@ -46,6 +52,14 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject resultScreen;
     [SerializeField] private GameObject pauseScreen;
 
+    [SerializeField] private SceneTransition transition;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clickAudio;
+    [SerializeField] private AudioClip countdownTickAudio;
+    [SerializeField] private AudioClip countdownGoAudio;
+    [SerializeField] private AudioClip failAudio;
+    [SerializeField] private AudioClip laughAudio;
+
     // Private Properties =========================================================
 
     // Public Functions =========================================================
@@ -56,50 +70,75 @@ public class GameplayManager : MonoBehaviour
 
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ShowMenu();
+        }
     }
 
-    public void RegisterGame()
+    public void RegisterGame(GameObject tutorialContent)
     {
-
+        this.tutorialContent = tutorialContent;
     }
 
     public void InitGame()
     {
         if (State != GameState.Init) return;
 
-        ExInitGame();
+        DoPreInitGame();
+
+        transition.TransitionIn(() => DoInitGame());
     }
 
     public void QuitGame()
     {
-        ExQuitGame();
+        DoQuitGame();
     }
 
     public void CloseTutorialScreen()
     {
         if (State != GameState.Init) return;
 
-        ExCloseTutorialScreen();
+        DoCloseTutorialScreen();
     }
 
     public void FinishGame(int winner, int scoreFirst, int scoreSecond)
     {
         if (State != GameState.Live) return;
 
-        ExFinishGame(winner, scoreFirst, scoreSecond);
+        DoFinishGame(winner, scoreFirst, scoreSecond);
+    }
+
+    public void ShowMenu()
+    {
+
+        DoShowMenu();
+    }
+
+    public void CloseMenu()
+    {
+        DoCloseMenu();
     }
 
     // Public Functions =========================================================
 
     // Private Functions =========================================================
 
-    private void ExInitGame()
+    private void DoPreInitGame()
     {
         volume.profile.TryGet(out colorAdjustments);
+        volume.profile.TryGet(out lensDistortion);
         colorAdjustments!.saturation.overrideState = true;
         colorAdjustments!.saturation.value = -100f;
+        lensDistortion!.intensity.overrideState = true;
+        lensDistortion!.intensity.value = -0.6f;
 
+        Transform contentContainer = tutorialScreen.transform.Find("Panel").Find("Content");
+        Instantiate(tutorialContent, contentContainer);
+    }
+
+    private void DoInitGame()
+    {
         tutorialScreen.SetActive(true);
         GameObject panel = tutorialScreen.transform.Find("Panel").gameObject;
 
@@ -113,9 +152,11 @@ public class GameplayManager : MonoBehaviour
             .Run();
     }
 
-    private void ExCloseTutorialScreen()
+    private void DoCloseTutorialScreen()
     {
         GameObject panel = tutorialScreen.transform.Find("Panel").gameObject;
+
+        audioSource.PlayOneShot(clickAudio);
 
         LSequence.Create()
             .Append(LMotion.Create(1f, 0f, 0.5f)
@@ -143,28 +184,40 @@ public class GameplayManager : MonoBehaviour
 
         LSequence.Create()
             .Append(LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.25f)
+                .WithOnComplete(() => audioSource.PlayOneShot(countdownTickAudio))
                 .BindToLocalScale(number.transform))
             .Append(LMotion.Create(new Vector3(1f, 1f, 1f), new Vector3(0.5f, 0.5f, 0.5f), 1f)
                 .BindToLocalScale(number.transform))
             .Append(LMotion.Create(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0f, 0f, 0f), 0.25f)
                 .WithOnComplete(() => number.GetComponent<TextMeshProUGUI>().SetText("2"))
                 .BindToLocalScale(number.transform))
-                  .Append(LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.25f)
+            .Append(LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.25f)
+                .WithOnComplete(() => audioSource.PlayOneShot(countdownTickAudio))
                 .BindToLocalScale(number.transform))
             .Append(LMotion.Create(new Vector3(1f, 1f, 1f), new Vector3(0.5f, 0.5f, 0.5f), 1f)
                 .BindToLocalScale(number.transform))
             .Append(LMotion.Create(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0f, 0f, 0f), 0.25f)
                 .WithOnComplete(() => number.GetComponent<TextMeshProUGUI>().SetText("1"))
                 .BindToLocalScale(number.transform))
-                  .Append(LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.25f)
+            .Append(LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.25f)
+                .WithOnComplete(() => audioSource.PlayOneShot(countdownTickAudio))
                 .BindToLocalScale(number.transform))
             .Append(LMotion.Create(new Vector3(1f, 1f, 1f), new Vector3(0.5f, 0.5f, 0.5f), 1f)
                 .BindToLocalScale(number.transform))
             .Append(LMotion.Create(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0f, 0f, 0f), 0.25f)
                 .WithOnComplete(() => number.GetComponent<TextMeshProUGUI>().SetText("Go!"))
                 .BindToLocalScale(number.transform))
-                  .Append(LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.25f)
+            .Append(LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.25f)
+                .WithOnComplete(() => audioSource.PlayOneShot(countdownGoAudio, 1.5f))
                 .BindToLocalScale(number.transform))
+            .Join(
+                LMotion.Create(-100f, 0f, 1f)
+                    .Bind(x => colorAdjustments!.saturation.value = x)
+            )
+            .Join(
+                LMotion.Create(-0.6f, 0f, 1f)
+                    .Bind(x => lensDistortion!.intensity.value = x)
+            )
             .Append(LMotion.Create(new Vector3(1f, 1f, 1f), new Vector3(0.5f, 0.5f, 0.5f), 1f)
                 .BindToLocalScale(number.transform))
             .Append(LMotion.Create(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0f, 0f, 0f), 0.25f)
@@ -174,10 +227,6 @@ public class GameplayManager : MonoBehaviour
                     StartLive();
                 })
                 .BindToLocalScale(number.transform))
-            .Join(
-                LMotion.Create(-100f, 0f, 1f)
-                    .Bind(x => colorAdjustments!.saturation.value = x)
-            )
             .Run();
     }
 
@@ -188,8 +237,10 @@ public class GameplayManager : MonoBehaviour
         OnStartGame?.Invoke(this, new EventArgs());
     }
 
-    private void ExFinishGame(int winner, int scoreFirst, int scoreSecond)
+    private void DoFinishGame(int winner, int scoreFirst, int scoreSecond)
     {
+
+
         GameObject leftPanel = splitFinishScreen.transform.Find("Left").gameObject;
         GameObject leftImage = splitFinishScreen.transform.Find("Left Image").gameObject;
         GameObject rightPanel = splitFinishScreen.transform.Find("Right").gameObject;
@@ -230,6 +281,10 @@ public class GameplayManager : MonoBehaviour
         LSequence.Create()
             .Append(
                 LMotion.Create(0f, 1f, 0.75f)
+                    .WithOnComplete(() =>
+                    {
+                        audioSource.PlayOneShot(failAudio, 1.5f);
+                    })
                     .BindToAlpha(splitFinishScreen.GetComponent<CanvasGroup>())
             )
             .Join(
@@ -242,7 +297,12 @@ public class GameplayManager : MonoBehaviour
             )
             .Append(
                LMotion.Create(new Vector3(4f, 4f, 4f), new Vector3(1f, 1f, 1f), 1f)
-                .WithDelay(3f)
+                .WithDelay(2f)
+                .WithOnComplete(() =>
+                {
+                    audioSource.PlayOneShot(countdownTickAudio, 1f);
+                    audioSource.PlayOneShot(laughAudio, 1f);
+                })
                 .WithEase(Ease.OutElastic)
                 .BindToLocalScale(leftImage.transform)
             )
@@ -266,7 +326,14 @@ public class GameplayManager : MonoBehaviour
                 LMotion.Create(1f, 1f, 2f)
                 .WithOnComplete(() =>
                 {
-                    ShowResultScreen(scoreFirst, scoreSecond);
+                    if (scoreFirst == -1)
+                    {
+                        DoQuitGame();
+                    }
+                    else
+                    {
+                        ShowResultScreen(scoreFirst, scoreSecond);
+                    }
                 })
                 .BindToAlpha(splitFinishScreen.GetComponent<CanvasGroup>())
             )
@@ -285,17 +352,90 @@ public class GameplayManager : MonoBehaviour
 
         LSequence.Create()
          .Append(LMotion.Create(0f, 1f, 0.5f)
-             .WithEase(Ease.OutCubic)
-             .BindToAlpha(resultScreen.GetComponent<CanvasGroup>()))
+            .WithEase(Ease.OutCubic)
+            .BindToAlpha(resultScreen.GetComponent<CanvasGroup>()))
          .Join(LMotion.Create(new Vector3(0.8f, 0.8f, 0.8f), new Vector3(1f, 1f, 1f), 1f)
-             .WithEase(Ease.OutCubic)
-             .BindToLocalScale(panel.transform))
+            .WithEase(Ease.OutCubic)
+            .BindToLocalScale(panel.transform))
          .Run();
     }
 
-    private void ExQuitGame()
+    private void DoShowMenu()
     {
+        if (isPaused) return;
+        isPaused = true;
 
+        pauseScreen.SetActive(true);
+        GameObject panel = pauseScreen.transform.Find("Panel").gameObject;
+
+        LSequence.Create()
+            .Append(LMotion.Create(0f, 1f, 0.5f)
+                .WithEase(Ease.OutCubic)
+                .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                .BindToAlpha(pauseScreen.GetComponent<CanvasGroup>()))
+            .Join(LMotion.Create(new Vector3(0.8f, 0.8f, 0.8f), new Vector3(1f, 1f, 1f), 1f)
+                .WithEase(Ease.OutCubic)
+                .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                .BindToLocalScale(panel.transform))
+            .Join(
+                LMotion.Create(0f, -100f, 1f)
+                    .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                    .Bind(x => colorAdjustments!.saturation.value = x)
+            )
+            .Join(
+                LMotion.Create(0f, -0.6f, 1f)
+                    .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                    .Bind(x => lensDistortion!.intensity.value = x)
+            )
+            // .Join(
+            //     LMotion.Create(1f, 0.1f, 1f)
+            //         .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+            //         .Bind(x => Time.timeScale = x)
+            // )
+            .Run();
+    }
+
+    private void DoCloseMenu()
+    {
+        // Time.timeScale = 0.1f;
+        GameObject panel = pauseScreen.transform.Find("Panel").gameObject;
+
+        audioSource.PlayOneShot(clickAudio);
+
+        LSequence.Create()
+            .Append(LMotion.Create(1f, 0f, 0.5f)
+                .WithEase(Ease.OutCubic)
+                .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                .BindToAlpha(pauseScreen.GetComponent<CanvasGroup>()))
+            .Join(LMotion.Create(new Vector3(1f, 1f, 1f), new Vector3(0.8f, 0.8f, 0.8f), 0.5f)
+                .WithEase(Ease.OutCubic)
+                .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                .BindToLocalScale(panel.transform))
+            .Join(
+                LMotion.Create(-100f, -0f, 1f)
+                    .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                    .Bind(x => colorAdjustments!.saturation.value = x)
+            )
+            .Join(
+                LMotion.Create(-0.6f, 0f, 1f)
+                    .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                    .Bind(x => lensDistortion!.intensity.value = x)
+            )
+            // .Join(
+            //     LMotion.Create(0.1f, 1f, 1f)
+            //         .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+            //         .WithOnComplete(() =>
+            //         {
+            //             isPaused = false;
+            //         })
+            //         .Bind(x => Time.timeScale = x)
+            // )
+            .Run();
+    }
+
+    private void DoQuitGame()
+    {
+        transition.TransitionOut(() => SceneManager.LoadScene("mainmenu"));
     }
 
     // Private Functions =========================================================

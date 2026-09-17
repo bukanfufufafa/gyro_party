@@ -20,6 +20,8 @@ public class GameplayManagerProxy : MonoBehaviour
 
     private GameplayManager gameplayManager;
 
+    [SerializeField] private GameObject tutorialContent;
+
     // Private Properties =========================================================
 
     // Public Functions =========================================================
@@ -46,7 +48,7 @@ public class GameplayManagerProxy : MonoBehaviour
         yield return null;
 
         gameplayManager = GameObject.Find("Gameplay Root Canvas").GetComponent<GameplayManager>();
-        gameplayManager.RegisterGame();
+        gameplayManager.RegisterGame(tutorialContent);
         gameplayManager.OnStartGame += OnStartGame;
         gameplayManager.OnFinishGame += OnFinishGame;
         gameplayManager.InitGame();

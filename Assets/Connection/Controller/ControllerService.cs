@@ -11,8 +11,8 @@ using UnityEngine;
 public class ControllerService
 {
     // Singleton =========================================================
-    private static readonly Lazy<ControllerService> _lazyInstance =
-       new Lazy<ControllerService>(() => new ControllerService());
+    private static readonly ThreadSafeResettableLazy<ControllerService> _lazyInstance =
+       new ThreadSafeResettableLazy<ControllerService>(() => new ControllerService());
     public static ControllerService Instance => _lazyInstance.Value;
     private ControllerService() { }
     // Singleton =========================================================
@@ -25,6 +25,12 @@ public class ControllerService
     {
         public ReadOnlyCollection<RTCIceCandidate> IceCandidates;
         public string Sdp;
+    }
+
+    public void Reset()
+    {
+        Shutdown();
+        _lazyInstance.Reset();
     }
 
     /// <summary>
@@ -48,12 +54,12 @@ public class ControllerService
         var peer1Result = await GatherICECandidates(peer1);
         if (peer1Result.GeneralChannel == null || peer1Result.SensorChannel == null)
             throw new Exception("ControllerService: Channel gagal dibuat untuk Controller 1");
-        
+
         controllers[0] = new Controller(peer1, peer1Result.GeneralChannel, peer1Result.SensorChannel);
-        connectionData[0] = new PeerConnectionData 
-        { 
-            IceCandidates = peer1Result.Candidates.AsReadOnly(), 
-            Sdp = peer1Result.Sdp 
+        connectionData[0] = new PeerConnectionData
+        {
+            IceCandidates = peer1Result.Candidates.AsReadOnly(),
+            Sdp = peer1Result.Sdp
         };
 
         // Setup Controller 2
@@ -61,12 +67,12 @@ public class ControllerService
         var peer2Result = await GatherICECandidates(peer2);
         if (peer2Result.GeneralChannel == null || peer2Result.SensorChannel == null)
             throw new Exception("ControllerService: Channel gagal dibuat untuk Controller 2");
-        
+
         controllers[1] = new Controller(peer2, peer2Result.GeneralChannel, peer2Result.SensorChannel);
-        connectionData[1] = new PeerConnectionData 
-        { 
-            IceCandidates = peer2Result.Candidates.AsReadOnly(), 
-            Sdp = peer2Result.Sdp 
+        connectionData[1] = new PeerConnectionData
+        {
+            IceCandidates = peer2Result.Candidates.AsReadOnly(),
+            Sdp = peer2Result.Sdp
         };
 
         return connectionData;

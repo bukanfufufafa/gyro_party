@@ -14,7 +14,6 @@ public class Controller
 
     public enum ControllerState
     {
-        Closed,
         None,
         Live
     }
@@ -38,6 +37,7 @@ public class Controller
 
     public event EventHandler? OnPromoted;
     public event EventHandler? OnChannelOpen;
+    public event EventHandler? OnShutdown;
     public event EventHandler<ControllerSensorData>? OnSensorChanged;
 
     // Public Functions =========================================================
@@ -127,6 +127,7 @@ public class Controller
 
     public void Shutdown()
     {
+        Debug.LogWarning("Controller: Shutdown, Index");
         if (State != ControllerState.Live)
         {
             Debug.LogWarning("Controller: Mau coba matiin tapi belum masuk mode Live");
@@ -138,7 +139,9 @@ public class Controller
 
         Peer.Close();
 
-        State = ControllerState.Closed;
+        State = ControllerState.None;
+
+        OnShutdown?.Invoke(this, new EventArgs());
     }
 
     // Public Functions =========================================================

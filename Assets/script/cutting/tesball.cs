@@ -6,13 +6,23 @@ public class BallMovement : MonoBehaviour
 
     private Rigidbody rb;
 
+    [SerializeField] private GameplayManagerProxy gameplayManagerProxy;
+    bool started;
+
+
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        gameplayManagerProxy.OnStartGame += (_, _) =>
+      {
+          started = true;
+          rb = GetComponent<Rigidbody>();
+      };
     }
 
     void FixedUpdate()
     {
+        if (!started) return;
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 

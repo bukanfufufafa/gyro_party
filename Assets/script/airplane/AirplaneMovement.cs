@@ -16,6 +16,8 @@ public class AirplaneMovement : MonoBehaviour
 
     private Controller? controller;
 
+    bool isStarted = false;
+
     // Private Properties =========================================================
 
     // Public Functions =========================================================
@@ -32,6 +34,30 @@ public class AirplaneMovement : MonoBehaviour
 
     void Update()
     {
+        if (!isStarted) return;
+
+        if (index == 0)
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+               airplane.transform.Rotate(0f, 0f, 1f * 200f * Time.deltaTime);
+            }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+               airplane.transform.Rotate(0f, 0f, -1f * 200f * Time.deltaTime);
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+               airplane.transform.Rotate(0f, 0f, 1f * 200f * Time.deltaTime);
+            }
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                airplane.transform.Rotate(0f, 0f, -1f * 200f * Time.deltaTime);
+            }
+        }
 
     }
 
@@ -41,14 +67,12 @@ public class AirplaneMovement : MonoBehaviour
 
     private void OnStartGame(object sender, EventArgs e)
     {
-        controller = ControllerService.Instance.GetController((byte)index);
-        controller.CallibratePosition();
-        controller.OnSensorChanged += OnSensorChanged;
+        isStarted = true;
     }
 
     private void OnFinishGame(object sender, EventArgs e)
     {
-        controller!.OnSensorChanged -= OnSensorChanged;
+        isStarted = false;
     }
 
     private void OnSensorChanged(object sender, ControllerSensorData data)

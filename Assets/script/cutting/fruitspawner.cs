@@ -18,13 +18,18 @@ public class fruitspawner : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 3f;
 
+    [SerializeField] private GameplayManagerProxy gameplayManagerProxy;
+
     private void Start()
     {
-        // Hanya spawner utama yang menjalankan random
-        if (otherSpawner != null && transform.GetInstanceID() > otherSpawner.transform.GetInstanceID())
-            return;
+        gameplayManagerProxy.OnStartGame += (_, _) =>
+        {
+            // Hanya spawner utama yang menjalankan random
+            if (otherSpawner != null && transform.GetInstanceID() > otherSpawner.transform.GetInstanceID())
+                return;
 
-        StartCoroutine(SpawnObject());
+            StartCoroutine(SpawnObject());
+        };
     }
 
     IEnumerator SpawnObject()

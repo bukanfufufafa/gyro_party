@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Cysharp.Threading.Tasks;
 
 public class CoreMenuUI : MonoBehaviour
 {
@@ -45,6 +46,13 @@ public class CoreMenuUI : MonoBehaviour
 
     void Start()
     {
+        _ = DoStart();
+    }
+
+    private async UniTask DoStart()
+    {
+        await UniTask.Delay(2750);
+
         foreach (var entry in menuEntries)
         {
             if (entry.panel != null)

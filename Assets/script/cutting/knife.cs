@@ -15,9 +15,18 @@ public class KnifeCut : MonoBehaviour
 
     public int score;
 
+    [SerializeField] private GameplayManagerProxy gameplayManagerProxy;
+    bool started;
+
+
     void Start()
     {
-        startPosition = transform.position;
+        gameplayManagerProxy.OnStartGame += (_, _) =>
+        {
+            started = true;
+            startPosition = transform.position;
+        };
+        // Controller controller = ControllerService.Instance.GetController();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -32,6 +41,8 @@ public class KnifeCut : MonoBehaviour
 
     void Update()
     {
+        if (!started) return;
+
         // Kalau sedang stun, jangan lakukan apa-apa
         if (stunt > 0)
         {

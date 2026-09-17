@@ -21,6 +21,8 @@ public class AirplaneGameManager : MonoBehaviour
     [SerializeField] private LevelManager levelManager1;
     [SerializeField] private LevelManager levelManager2;
 
+    [SerializeField] private AudioSource audioSource;
+
     // Private Properties =========================================================
 
     // Public Functions =========================================================
@@ -30,7 +32,7 @@ public class AirplaneGameManager : MonoBehaviour
         gameplayManagerProxy.OnStartGame += OnStartGame;
         gameplayManagerProxy.OnFinishGame += OnFinishGame;
 
-        _ = TestSetupRelay();
+        // _ = TestSetupRelay();
     }
 
     void Update()
@@ -40,7 +42,7 @@ public class AirplaneGameManager : MonoBehaviour
 
     void OnDestroy()
     {
-        _ = RelayService.Instance.Shutdown();
+        // _ = RelayService.Instance.Shutdown();
     }
 
     public void OnAirplaneProgressChanged(float progress)
@@ -56,33 +58,6 @@ public class AirplaneGameManager : MonoBehaviour
     // Public Functions =========================================================
 
     // Private Functions =========================================================
-
-    private async UniTask TestSetupRelay()
-    {
-        PlayerPrefs.SetString("RelayUrl", "coke-bonfire-vaguely.ngrok-free.dev");
-        RelayService.Instance.OnConnectControllerRequest += (_, result) => result(true);
-        await RelayService.Instance.Setup();
-        Controller controller1 = ControllerService.Instance.GetController(0);
-        controller1.OnChannelOpen += (_, _) =>
-        {
-            Debug.LogWarning("Controller 1 Channel Open");
-            controller1.SetSensorControl(true);
-        };
-        controller1.OnPromoted += (_, _) =>
-        {
-            Debug.LogWarning("Controller 1 Promoted");
-        };
-        Controller controller2 = ControllerService.Instance.GetController(1);
-        controller2.OnPromoted += (_, _) =>
-        {
-            Debug.LogWarning("Controller 2 Promoted");
-        };
-        controller2.OnChannelOpen += (_, _) =>
-        {
-            Debug.LogWarning("Controller 2 Channel Open");
-            controller2.SetSensorControl(true);
-        };
-    }
 
     private void OnStartGame(object sender, EventArgs e)
     {
@@ -100,6 +75,8 @@ public class AirplaneGameManager : MonoBehaviour
 
         levelManager1.StartGame();
         levelManager2.StartGame();
+
+        audioSource.Play();
     }
 
     private void OnFinishGame(object sender, EventArgs e)
