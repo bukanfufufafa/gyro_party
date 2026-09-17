@@ -1,86 +1,112 @@
-using System.Buffers;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class mainmenu : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [Header("Main Menu")]
     [SerializeField] private GameObject gamemode;
     [SerializeField] private GameObject settings;
     [SerializeField] private GameObject credit;
     [SerializeField] private GameObject quit;
-    
-    void Start()
-    {
-        if (gamemode != null)
-        {
-            gamemode.SetActive(false);
-        }
-        if (settings != null)
-        {
-            settings.SetActive(false);
-        }
-        if (credit != null)
-        {
-            credit.SetActive(false);
-        }
-        if (quit != null)
-        {
-            quit.SetActive(false);
-        }
 
-        activateGamemode();
+    [Header("Pause")]
+    [SerializeField] private GameObject pause;
+
+    private bool paused = false;
+
+    private void Awake()
+    {
+        // Pastikan script ini tetap aktif
+        Debug.Log("MAINMENU SCRIPT AKTIF");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
-    }
+        Time.timeScale = 1f;
+        paused = false;
 
-    public void activateGamemode()
-    {
-        if(gamemode != null)
+        if (pause != null)
         {
-            gamemode.SetActive(true);
-            settings.SetActive(false);
-            credit.SetActive(false);
-            quit.SetActive(false);
+            pause.SetActive(false);
         }
     }
 
-    public void activateSetting()
+    private void Update()
     {
-        if (settings != null)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            gamemode.SetActive(false);
-            settings.SetActive(true);
-            credit.SetActive(false);
-            quit.SetActive(false);
+            Debug.Log("ESC TERDETEKSI");
+
+            if (paused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
         }
     }
 
-    public void activateCredit()
+    public void PauseGame()
     {
-        if (credit != null)
+        Debug.Log("PAUSE GAME DIPANGGIL");
+
+        paused = true;
+
+        if (pause != null)
         {
-            gamemode.SetActive(false);
-            settings.SetActive(false);
-            credit.SetActive(true);
-            quit.SetActive(false);
+            pause.SetActive(true);
+        }
+
+        Time.timeScale = 0f;
+    }
+
+    public void ResumeGame()
+    {
+        Debug.Log("RESUME BUTTON DIPANGGIL");
+
+        Time.timeScale = 1f;
+        paused = false;
+
+        if (pause != null)
+        {
+            pause.SetActive(false);
         }
     }
 
-    public void activateQuit()
+    public void goMenu()
     {
-        if (quit != null)
-        {
-            gamemode.SetActive(false);
-            settings.SetActive(false);
-            credit.SetActive(false);
-            quit.SetActive(true);
-        }
+        Debug.Log("GO MENU BUTTON DIPANGGIL");
+
+        Time.timeScale = 1f;
+        paused = false;
+
+        SceneManager.LoadScene("mainmenu");
     }
 
+    public void cutting()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("cutting");
+    }
+
+    public void fishing()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("fishing");
+    }
+
+    public void plane()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("airplane");
+    }
+
+    public void exit()
+    {
+        Time.timeScale = 1f;
+        Application.Quit();
+    }
 }

@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/mainmenu.unity
+    guid: 28454f2160110d647b6c44fd06bc1c75
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
@@ -59,9 +62,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/LeanTween/Examples/Scenes/LogoCinematic.unity
     guid: 68ea271dda32c4c209e4419b091b2288
-  - enabled: 1
-    path: Assets/Scenes/mainmenu.unity
-    guid: 28454f2160110d647b6c44fd06bc1c75
   - enabled: 1
     path: Assets/Samples/WebRTC/2.4.0-exp.11/Example/MediaStream/MediaStream.unity
     guid: 6a553b4932fd56b45ab503ea0f990e2d
@@ -164,4 +164,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/gameplayroot.unity
     guid: 0b2c972dbc8bec54d864125de30dc204
+  - enabled: 1
+    path: Assets/Scenes/cutting.unity
+    guid: 9984ccab57a8249468e7206f5a574b40
+  - enabled: 1
+    path: Assets/Scenes/airplane.unity
+    guid: 794095dd069fe7b4cb48155bcebc72f1
+  - enabled: 1
+    path: Assets/Scenes/fishing.unity
+    guid: 33ff1626aea679e48bffaa53f96f4285
   m_configObjects: {}
