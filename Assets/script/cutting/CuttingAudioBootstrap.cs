@@ -6,6 +6,8 @@ public class CuttingAudioBootstrap : MonoBehaviour
 
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip bombAudio;
+    [SerializeField] private AudioClip sliceAudio;
+    [SerializeField] private AudioClip splashAudio;
 
     void Start()
     {
@@ -18,5 +20,15 @@ public class CuttingAudioBootstrap : MonoBehaviour
     public void PlayBomb()
     {
         audioSource.PlayOneShot(bombAudio, 0.5f);
+    }
+
+    public void PlaySlice()
+    {
+        audioSource.PlayOneShot(sliceAudio, 1f);
+    }
+
+    public void PlaySplash()
+    {
+        audioSource.PlayOneShot(splashAudio, 1f);
     }
 }

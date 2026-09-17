@@ -75,6 +75,8 @@ public class KnifeCut : MonoBehaviour
             if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
             {
                 cutting = false;
+                CuttingAudioBootstrap audioBootstrap = GameObject.Find("Canvas").GetComponent<CuttingAudioBootstrap>();
+                audioBootstrap.PlaySlice();
             }
         }
         else
