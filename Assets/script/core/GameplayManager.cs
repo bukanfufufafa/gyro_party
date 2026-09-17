@@ -239,8 +239,6 @@ public class GameplayManager : MonoBehaviour
 
     private void DoFinishGame(int winner, int scoreFirst, int scoreSecond)
     {
-
-
         GameObject leftPanel = splitFinishScreen.transform.Find("Left").gameObject;
         GameObject leftImage = splitFinishScreen.transform.Find("Left Image").gameObject;
         GameObject rightPanel = splitFinishScreen.transform.Find("Right").gameObject;
@@ -301,7 +299,7 @@ public class GameplayManager : MonoBehaviour
                 .WithOnComplete(() =>
                 {
                     audioSource.PlayOneShot(countdownTickAudio, 1f);
-                    audioSource.PlayOneShot(laughAudio, 1f);
+                    audioSource.PlayOneShot(laughAudio, 2f);
                 })
                 .WithEase(Ease.OutElastic)
                 .BindToLocalScale(leftImage.transform)
@@ -380,11 +378,13 @@ public class GameplayManager : MonoBehaviour
             .Join(
                 LMotion.Create(0f, -100f, 1f)
                     .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                    .WithEase(Ease.OutExpo)
                     .Bind(x => colorAdjustments!.saturation.value = x)
             )
             .Join(
                 LMotion.Create(0f, -0.6f, 1f)
                     .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                    .WithEase(Ease.OutExpo)
                     .Bind(x => lensDistortion!.intensity.value = x)
             )
             // .Join(
@@ -397,7 +397,9 @@ public class GameplayManager : MonoBehaviour
 
     private void DoCloseMenu()
     {
-        // Time.timeScale = 0.1f;
+        isPaused = false;
+        // Time.timeScale = 1f;
+
         GameObject panel = pauseScreen.transform.Find("Panel").gameObject;
 
         audioSource.PlayOneShot(clickAudio);
@@ -414,11 +416,13 @@ public class GameplayManager : MonoBehaviour
             .Join(
                 LMotion.Create(-100f, -0f, 1f)
                     .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                    .WithEase(Ease.OutExpo)
                     .Bind(x => colorAdjustments!.saturation.value = x)
             )
             .Join(
                 LMotion.Create(-0.6f, 0f, 1f)
                     .WithScheduler(MotionScheduler.TimeUpdateIgnoreTimeScale)
+                    .WithEase(Ease.OutExpo)
                     .Bind(x => lensDistortion!.intensity.value = x)
             )
             // .Join(

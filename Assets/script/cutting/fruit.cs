@@ -39,7 +39,8 @@ public class Fruit : MonoBehaviour
                     }
                     cutted = true;
 
-
+                    CuttingAudioBootstrap audioBootstrap = GameObject.Find("Canvas").GetComponent<CuttingAudioBootstrap>();
+                    audioBootstrap.PlaySplash();
                 }
                 detach();
             }
