@@ -18,6 +18,9 @@ public class AirplaneGameManager : MonoBehaviour
     [SerializeField] private GameObject routeIndicator;
     [SerializeField] private GameObject airplaneIcon;
 
+    [SerializeField] private LevelManager levelManager1;
+    [SerializeField] private LevelManager levelManager2;
+
     // Private Properties =========================================================
 
     // Public Functions =========================================================
@@ -40,6 +43,16 @@ public class AirplaneGameManager : MonoBehaviour
         _ = RelayService.Instance.Shutdown();
     }
 
+    public void OnAirplaneProgressChanged(float progress)
+    {
+        RectTransform routeRect = routeIndicator.GetComponent<RectTransform>();
+        float routeWidth = routeRect.rect.width;
+
+        RectTransform airplaneRect = airplaneIcon.GetComponent<RectTransform>();
+        float targetAirplaneLeft = (progress * (routeWidth - 48)) + 28;
+        airplaneRect.anchoredPosition = new Vector2(targetAirplaneLeft, airplaneRect.anchoredPosition.y);
+    }
+
     // Public Functions =========================================================
 
     // Private Functions =========================================================
@@ -49,10 +62,25 @@ public class AirplaneGameManager : MonoBehaviour
         PlayerPrefs.SetString("RelayUrl", "coke-bonfire-vaguely.ngrok-free.dev");
         RelayService.Instance.OnConnectControllerRequest += (_, result) => result(true);
         await RelayService.Instance.Setup();
-        Controller controller = ControllerService.Instance.GetController(0);
-        controller.OnChannelOpen += (_, _) =>
+        Controller controller1 = ControllerService.Instance.GetController(0);
+        controller1.OnChannelOpen += (_, _) =>
         {
-            controller.SetSensorControl(true);
+            Debug.LogWarning("Controller 1 Channel Open");
+            controller1.SetSensorControl(true);
+        };
+        controller1.OnPromoted += (_, _) =>
+        {
+            Debug.LogWarning("Controller 1 Promoted");
+        };
+        Controller controller2 = ControllerService.Instance.GetController(1);
+        controller2.OnPromoted += (_, _) =>
+        {
+            Debug.LogWarning("Controller 2 Promoted");
+        };
+        controller2.OnChannelOpen += (_, _) =>
+        {
+            Debug.LogWarning("Controller 2 Channel Open");
+            controller2.SetSensorControl(true);
         };
     }
 
@@ -70,12 +98,14 @@ public class AirplaneGameManager : MonoBehaviour
             )
             .Run();
 
-        LevelManager.Instance.StartGame();
+        levelManager1.StartGame();
+        levelManager2.StartGame();
     }
 
     private void OnFinishGame(object sender, EventArgs e)
     {
-        LevelManager.Instance.StopGame();
+        levelManager1.StopGame();
+        levelManager2.StopGame();
     }
 
     // Private Functions =========================================================

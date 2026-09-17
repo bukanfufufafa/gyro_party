@@ -29,9 +29,10 @@ public class GameplayManagerProxy : MonoBehaviour
         StartCoroutine(OnStart());
     }
 
-    public void FinishGame(bool isFirstWinner)
+    public void FinishGame(int winner)
     {
-        gameplayManager.FinishGame(isFirstWinner, 100, 100);
+        Debug.LogWarning($"Winner {winner}");
+        gameplayManager.FinishGame(winner, -1, -1);
     }
 
     // Public Functions =========================================================

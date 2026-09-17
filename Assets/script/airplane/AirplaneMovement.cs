@@ -23,6 +23,7 @@ public class AirplaneMovement : MonoBehaviour
     void Awake()
     {
         gameplayManagerProxy.OnStartGame += OnStartGame;
+        gameplayManagerProxy.OnFinishGame += OnFinishGame;
     }
 
     void Start()
@@ -53,7 +54,7 @@ public class AirplaneMovement : MonoBehaviour
     private void OnSensorChanged(object sender, ControllerSensorData data)
     {
         var rotation = airplane.transform.rotation;
-        airplane.transform.rotation = Quaternion.Slerp(rotation, Quaternion.Euler(rotation.x, rotation.y, data.Rotation.eulerAngles.z), 25f);
+        airplane.transform.rotation = Quaternion.Slerp(rotation, Quaternion.Euler(rotation.x, rotation.y, data.Rotation.eulerAngles.z - 90f), 25f);
     }
 
     // Private Functions =========================================================

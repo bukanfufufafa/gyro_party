@@ -81,7 +81,7 @@ public class RelayService
 
         // Send handshake request.
         State = RelayState.Handshaking;
-        (var iceCandidates, var sdpDescription) = await ControllerService.Instance.Setup();
+        var connectionData = await ControllerService.Instance.Setup();
         if (wsSetupCts.IsCancellationRequested)
         {
             if (!tcs.TrySetResult(false))
@@ -90,7 +90,7 @@ public class RelayService
             }
         }
 
-        if (string.IsNullOrEmpty(sdpDescription))
+        if (string.IsNullOrEmpty(connectionData[0].Sdp) || string.IsNullOrEmpty(connectionData[1].Sdp))
         {
             Debug.LogWarning("RelayService: SDP Description kosong");
             await Shutdown();
@@ -101,8 +101,10 @@ public class RelayService
         }
 
         var request = new RelayHandshakeRequest(
-            iceCandidates.Select(x => new ICECandidate(x.Candidate, x.SdpMid, x.SdpMLineIndex ?? 0)).ToArray(),
-            sdpDescription
+            connectionData[0].IceCandidates.Select(x => new ICECandidate(x.Candidate, x.SdpMid, x.SdpMLineIndex ?? 0)).ToArray(),
+            connectionData[1].IceCandidates.Select(x => new ICECandidate(x.Candidate, x.SdpMid, x.SdpMLineIndex ?? 0)).ToArray(),
+            connectionData[0].Sdp,
+            connectionData[1].Sdp
         );
         _ = SendJson((ushort)RelaySystemMessageId.Handshake, request, wsSetupCts.Token);
 

@@ -83,11 +83,11 @@ public class GameplayManager : MonoBehaviour
         ExCloseTutorialScreen();
     }
 
-    public void FinishGame(bool isFirstWinner, int scoreFirst, int scoreSecond)
+    public void FinishGame(int winner, int scoreFirst, int scoreSecond)
     {
         if (State != GameState.Live) return;
 
-        ExFinishGame(isFirstWinner, scoreFirst, scoreSecond);
+        ExFinishGame(winner, scoreFirst, scoreSecond);
     }
 
     // Public Functions =========================================================
@@ -188,7 +188,7 @@ public class GameplayManager : MonoBehaviour
         OnStartGame?.Invoke(this, new EventArgs());
     }
 
-    private void ExFinishGame(bool isFirstWinner, int scoreFirst, int scoreSecond)
+    private void ExFinishGame(int winner, int scoreFirst, int scoreSecond)
     {
         GameObject leftPanel = splitFinishScreen.transform.Find("Left").gameObject;
         GameObject leftImage = splitFinishScreen.transform.Find("Left Image").gameObject;
@@ -198,17 +198,24 @@ public class GameplayManager : MonoBehaviour
         ColorUtility.TryParseHtmlString("#FF003350", out Color failColor);
         ColorUtility.TryParseHtmlString("#29292950", out Color successColor);
 
-        if (isFirstWinner)
+        if (winner == 0)
         {
             leftPanel.GetComponent<Image>().color = successColor;
             leftImage.GetComponent<RawImage>().texture = splitSuccessTexture;
             rightPanel.GetComponent<Image>().color = failColor;
             rightimage.GetComponent<RawImage>().texture = splitFailTexture;
         }
-        else
+        else if (winner == 1)
         {
             leftPanel.GetComponent<Image>().color = failColor;
             leftImage.GetComponent<RawImage>().texture = splitFailTexture;
+            rightPanel.GetComponent<Image>().color = successColor;
+            rightimage.GetComponent<RawImage>().texture = splitSuccessTexture;
+        }
+        else
+        {
+            leftPanel.GetComponent<Image>().color = successColor;
+            leftImage.GetComponent<RawImage>().texture = splitSuccessTexture;
             rightPanel.GetComponent<Image>().color = successColor;
             rightimage.GetComponent<RawImage>().texture = splitSuccessTexture;
         }
@@ -216,8 +223,8 @@ public class GameplayManager : MonoBehaviour
         State = GameState.Finished;
         OnFinishGame?.Invoke(this, new EventArgs());
 
-        leftImage.SetActive(false);
-        rightimage.SetActive(false);
+        leftImage.GetComponent<CanvasGroup>().alpha = 0;
+        rightimage.GetComponent<CanvasGroup>().alpha = 0;
         splitFinishScreen.SetActive(true);
 
         LSequence.Create()
@@ -233,25 +240,27 @@ public class GameplayManager : MonoBehaviour
                 LMotion.Create(1f, 0f, 2.5f)
                     .Bind(x => TimeModifier = x)
             )
-            .Insert(
-                1,
-                LMotion.Create(1f, 1f, 2f)
-                .WithOnComplete(() =>
-                {
-                    leftImage.SetActive(true);
-                    rightimage.SetActive(true);
-                })
-                .BindToAlpha(splitFinishScreen.GetComponent<CanvasGroup>())
-            )
             .Append(
-               LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.5f)
+               LMotion.Create(new Vector3(4f, 4f, 4f), new Vector3(1f, 1f, 1f), 1f)
+                .WithDelay(3f)
                 .WithEase(Ease.OutElastic)
                 .BindToLocalScale(leftImage.transform)
             )
             .Join(
-               LMotion.Create(new Vector3(2f, 2f, 2f), new Vector3(1f, 1f, 1f), 0.5f)
+               LMotion.Create(0f, 1f, 1f)
+                .WithDelay(3f)
+                .BindToAlpha(leftImage.GetComponent<CanvasGroup>())
+            )
+            .Join(
+               LMotion.Create(new Vector3(4f, 4f, 4f), new Vector3(1f, 1f, 1f), 1f)
+                .WithDelay(3f)
                 .WithEase(Ease.OutElastic)
                 .BindToLocalScale(rightimage.transform)
+            )
+            .Join(
+               LMotion.Create(0f, 1f, 1f)
+                .WithDelay(3f)
+                .BindToAlpha(rightimage.GetComponent<CanvasGroup>())
             )
             .Append(
                 LMotion.Create(1f, 1f, 2f)
@@ -267,9 +276,9 @@ public class GameplayManager : MonoBehaviour
     private void ShowResultScreen(int scoreFirst, int scoreSecond)
     {
         resultScreen.SetActive(true);
-        GameObject panel = tutorialScreen.transform.Find("Panel").gameObject;
-        TextMeshProUGUI firstScore = splitFinishScreen.transform.Find("Score First").GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI secondScore = splitFinishScreen.transform.Find("Score Second").GetComponent<TextMeshProUGUI>();
+        GameObject panel = resultScreen.transform.Find("Panel").gameObject;
+        TextMeshProUGUI firstScore = panel.transform.Find("Score First").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI secondScore = panel.transform.Find("Score Second").GetComponent<TextMeshProUGUI>();
 
         firstScore.SetText($"{scoreFirst}");
         secondScore.SetText($"{scoreSecond}");
@@ -277,7 +286,7 @@ public class GameplayManager : MonoBehaviour
         LSequence.Create()
          .Append(LMotion.Create(0f, 1f, 0.5f)
              .WithEase(Ease.OutCubic)
-             .BindToAlpha(tutorialScreen.GetComponent<CanvasGroup>()))
+             .BindToAlpha(resultScreen.GetComponent<CanvasGroup>()))
          .Join(LMotion.Create(new Vector3(0.8f, 0.8f, 0.8f), new Vector3(1f, 1f, 1f), 1f)
              .WithEase(Ease.OutCubic)
              .BindToLocalScale(panel.transform))

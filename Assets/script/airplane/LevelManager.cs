@@ -7,25 +7,27 @@ using UnityEngine.Events;
 public struct StageConfig
 {
     public string stageName;
-    public float duration;
-    public float minSpawnDelay;
-    public float maxSpawnDelay;
-    public int minObstacles;
-    public int maxObstacles;
+    [Tooltip("Durasi stage berjalan (detik)")] public float duration;
+    [Tooltip("Jeda minimal antar spawn")] public float minSpawnDelay;
+    [Tooltip("Jeda maksimal antar spawn")] public float maxSpawnDelay;
+    [Tooltip("Jumlah minimal obstacle dalam 1 waktu spawn")] public int minObstacles;
+    [Tooltip("Jumlah maksimal obstacle dalam 1 waktu spawn")] public int maxObstacles;
 }
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager Instance { get; private set; }
 
     [Header("References")]
+    [Tooltip("Masukkan Parent GameObject dari Pesawat agar posisi Z sinkron.")]
     [SerializeField] private Transform playerParent;
 
     [Header("Obstacle Settings")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
+    [Tooltip("Jarak Z di depan pesawat untuk spawn obstacle")]
     [SerializeField] private float spawnDistanceZ = 100f;
+    [Tooltip("Batas jarak di belakang pesawat sebelum obstacle dihancurkan")]
     [SerializeField] private float despawnDistanceBehind = 15f;
-
+    
     [Header("Spawn Points (Koordinat X, Y)")]
     [SerializeField] private Vector2 topLeft = new Vector2(-5f, 5f);
     [SerializeField] private Vector2 topRight = new Vector2(5f, 5f);
@@ -34,8 +36,7 @@ public class LevelManager : MonoBehaviour
 
     [Header("Stage Settings")]
     [SerializeField] private float initialDelay = 4f;
-    [SerializeField]
-    private List<StageConfig> stages = new List<StageConfig>()
+    [SerializeField] private List<StageConfig> stages = new List<StageConfig>()
     {
         new StageConfig { stageName = "Stage 1", duration = 8f, minSpawnDelay = 3f, maxSpawnDelay = 3f, minObstacles = 1, maxObstacles = 1 },
         new StageConfig { stageName = "Stage 2", duration = 10f, minSpawnDelay = 2f, maxSpawnDelay = 3f, minObstacles = 1, maxObstacles = 1 },
@@ -43,76 +44,110 @@ public class LevelManager : MonoBehaviour
         new StageConfig { stageName = "Stage 4", duration = 6f, minSpawnDelay = 1f, maxSpawnDelay = 1.5f, minObstacles = 1, maxObstacles = 2 }
     };
 
-    [Header("Events")]
-    public UnityEvent OnGameOver;
-    // Tambahan event jika butuh trigger UI (opsional)
+    [Header("Events (Callbacks)")]
     public UnityEvent OnGameStarted;
+    public UnityEvent OnGameOver;
+    
+    [Tooltip("Dipanggil saat seluruh stage selesai (Game Win).")]
+    public UnityEvent OnGameCompleted; 
+    
+    [Tooltip("Mengirim nilai 0.0 hingga 1.0 secara real-time. Cocok untuk UI Slider.")]
+    public UnityEvent<float> OnProgressUpdated;
 
     private bool isGameOver = false;
-    private bool hasStarted = false; // Flag tambahan agar StartGame tidak bisa dipanggil 2x
+    private bool hasStarted = false; 
     private List<GameObject> activeObstacles = new List<GameObject>();
 
-    // Tambahan: Referensi coroutine
     private Coroutine stageCoroutine;
     private Coroutine cleanupCoroutine;
 
-    private void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
+    // Variabel internal untuk kalkulasi progress
+    private float totalGameDuration = 0f;
+    private float currentElapsedTime = 0f;
 
-    // UBAH: Fungsi Start() dihapus / dikosongkan.
 
     /// <summary>
-    /// Panggil fungsi ini dari UI Button (Play) atau script Main Menu Anda.
+    /// Memulai permainan, menjalankan pesawat, dan memulai siklus stage.
     /// </summary>
     public void StartGame()
     {
         if (hasStarted) return;
         hasStarted = true;
+        isGameOver = false;
+        currentElapsedTime = 0f;
 
-        Debug.Log("Game Dimulai!");
+        // Kalkulasi total waktu game
+        totalGameDuration = initialDelay;
+        foreach (var stage in stages)
+        {
+            totalGameDuration += stage.duration;
+        }
 
-        // 1. Jalankan pergerakan pesawat (ForwardMover)
+        Debug.Log($"Game Dimulai! Total durasi game: {totalGameDuration} detik.");
+
         if (playerParent != null)
         {
             ForwardMover mover = playerParent.GetComponent<ForwardMover>();
             if (mover != null) mover.StartMovement();
         }
 
-        // 2. Jalankan spawner dekorasi (Asumsi terpasang di GameObject yang sama)
         DecorationSpawner decSpawner = GetComponent<DecorationSpawner>();
         if (decSpawner != null) decSpawner.StartSpawning();
 
-        // 3. Mulai siklus Stage & pembersihan memori Obstacle
-        StartCoroutine(StageRoutine());
-        StartCoroutine(CleanupRoutine());
+        stageCoroutine = StartCoroutine(StageRoutine());
+        cleanupCoroutine = StartCoroutine(CleanupRoutine());
 
-        // Trigger event (jika UI mau bereaksi, misal menghilangkan menu utama)
         OnGameStarted?.Invoke();
+        OnProgressUpdated?.Invoke(0f);
+    }
+
+    /// <summary>
+    /// Menghentikan seluruh proses game secara bersih (bisa untuk Pause, GameOver, atau Win).
+    /// </summary>
+    public void StopGame()
+    {
+        if (!hasStarted) return;
+        hasStarted = false; 
+
+        if (playerParent != null)
+        {
+            ForwardMover mover = playerParent.GetComponent<ForwardMover>();
+            if (mover != null) mover.StopMovement();
+        }
+
+        DecorationSpawner decSpawner = GetComponent<DecorationSpawner>();
+        if (decSpawner != null) decSpawner.StopSpawning();
+
+        if (stageCoroutine != null) StopCoroutine(stageCoroutine);
+        if (cleanupCoroutine != null) StopCoroutine(cleanupCoroutine);
     }
 
     private IEnumerator StageRoutine()
     {
-        // Jeda awal 4 detik
-        yield return new WaitForSeconds(initialDelay);
+        // 1. Fase Jeda Awal
+        float delayTimer = 0f;
+        while (delayTimer < initialDelay && !isGameOver && hasStarted)
+        {
+            delayTimer += Time.deltaTime;
+            currentElapsedTime += Time.deltaTime;
+            
+            OnProgressUpdated?.Invoke(currentElapsedTime / totalGameDuration);
+            yield return null;
+        }
 
-        // Eksekusi tiap stage berurutan
+        // 2. Eksekusi tiap stage berurutan
         for (int i = 0; i < stages.Count; i++)
         {
-            if (isGameOver) yield break;
+            if (isGameOver || !hasStarted) yield break;
 
             StageConfig currentStage = stages[i];
-            Debug.Log($"Memulai: {currentStage.stageName}");
-
             float stageTimer = 0f;
             float nextSpawnTimer = 0f;
 
-            // Loop selama durasi stage belum habis
-            while (stageTimer < currentStage.duration && !isGameOver)
+            while (stageTimer < currentStage.duration && !isGameOver && hasStarted)
             {
                 stageTimer += Time.deltaTime;
+                currentElapsedTime += Time.deltaTime;
                 nextSpawnTimer -= Time.deltaTime;
 
                 if (nextSpawnTimer <= 0f)
@@ -121,11 +156,23 @@ public class LevelManager : MonoBehaviour
                     nextSpawnTimer = Random.Range(currentStage.minSpawnDelay, currentStage.maxSpawnDelay);
                 }
 
+                // Kalkulasi progress (0.0 s/d 1.0)
+                float progress = Mathf.Clamp01(currentElapsedTime / totalGameDuration);
+                OnProgressUpdated?.Invoke(progress);
+
                 yield return null;
             }
         }
-
-        Debug.Log("Semua Stage Selesai! Anda bisa me-loop stage terakhir atau menang di sini.");
+        
+        // 3. Pengecekan Akhir (Level Selesai)
+        if (!isGameOver && hasStarted)
+        {
+            OnProgressUpdated?.Invoke(1f); 
+            Debug.Log("Semua Stage Selesai! Level Completed.");
+            
+            OnGameCompleted?.Invoke(); 
+            StopGame(); 
+        }
     }
 
     private void SpawnObstacles(StageConfig config)
@@ -133,38 +180,32 @@ public class LevelManager : MonoBehaviour
         if (obstaclePrefabs.Count == 0 || playerParent == null) return;
 
         int spawnCount = Random.Range(config.minObstacles, config.maxObstacles + 1);
-
-        // Buat list posisi yang tersedia agar 2 obstacle tidak menumpuk di 1 titik
         List<Vector2> availablePositions = new List<Vector2> { topLeft, topRight, bottomLeft, bottomRight };
-
+        
         for (int i = 0; i < spawnCount; i++)
         {
             if (availablePositions.Count == 0) break;
 
-            // Pilih posisi acak
             int posIndex = Random.Range(0, availablePositions.Count);
             Vector2 selectedOffset = availablePositions[posIndex];
-            availablePositions.RemoveAt(posIndex); // Hapus agar tidak terpilih lagi di loop yang sama
+            availablePositions.RemoveAt(posIndex); 
 
-            // Tentukan posisi 3D
             Vector3 spawnPos = new Vector3(
                 playerParent.position.x + selectedOffset.x,
                 playerParent.position.y + selectedOffset.y,
                 playerParent.position.z + spawnDistanceZ
             );
 
-            // Pilih prefab acak dan Spawn
             GameObject prefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Count)];
             GameObject obs = Instantiate(prefab, spawnPos, Quaternion.identity);
-
+            
             activeObstacles.Add(obs);
         }
     }
 
-    // Coroutine khusus untuk membersihkan memory (dipanggil rutin setiap 1 detik, lebih hemat performa dari Update)
     private IEnumerator CleanupRoutine()
     {
-        while (!isGameOver)
+        while (true)
         {
             for (int i = activeObstacles.Count - 1; i >= 0; i--)
             {
@@ -174,53 +215,23 @@ public class LevelManager : MonoBehaviour
                     continue;
                 }
 
-                // Jika posisi Z obstacle lebih kecil dari (posisi Z pesawat - jarak despawn)
                 if (activeObstacles[i].transform.position.z < playerParent.position.z - despawnDistanceBehind)
                 {
                     Destroy(activeObstacles[i]);
                     activeObstacles.RemoveAt(i);
                 }
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1f); 
         }
-    }
-
-    /// <summary>
-    /// FUNGSI BARU: Menghentikan seluruh proses game secara bersih.
-    /// Bisa dipanggil saat pause, pindah scene, atau game over.
-    /// </summary>
-    public void StopGame()
-    {
-        if (!hasStarted) return;
-        hasStarted = false; // Reset state agar bisa dipanggil StartGame() lagi jika ingin dibuat sistem Resume
-
-        Debug.Log("Game Dihentikan (Stopped)!");
-
-        // 1. Hentikan laju pesawat
-        if (playerParent != null)
-        {
-            ForwardMover mover = playerParent.GetComponent<ForwardMover>();
-            if (mover != null) mover.StopMovement();
-        }
-
-        // 2. Hentikan spawner dekorasi
-        DecorationSpawner decSpawner = GetComponent<DecorationSpawner>();
-        if (decSpawner != null) decSpawner.StopSpawning();
-
-        // 3. Hentikan coroutine Level Manager
-        if (stageCoroutine != null) StopCoroutine(stageCoroutine);
-        if (cleanupCoroutine != null) StopCoroutine(cleanupCoroutine);
     }
 
     public void TriggerGameOver()
     {
         if (isGameOver) return;
         isGameOver = true;
-
+        
         Debug.Log("Game Over!");
         OnGameOver?.Invoke();
-
-        // Gunakan StopGame untuk mematikan semua sistem karena logic-nya sama
-        StopGame();
+        StopGame(); 
     }
 }
