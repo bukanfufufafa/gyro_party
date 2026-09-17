@@ -23,7 +23,12 @@ public class fishing : MonoBehaviour
     [Header("Player")]
     public PlayerMovement playerMovement;
 
+    [Tooltip("Centang untuk Player 1 (Q), matikan untuk Player 2 (M)")]
+    public bool player1 = true;
+
     private Vector3 startPosition;
+    private Vector3 fishingStartPosition;
+
     private FishRandomMovement caughtFish;
 
     private bool fishingActive = false;
@@ -55,7 +60,10 @@ public class fishing : MonoBehaviour
 
     private void Update()
     {
-        // Rod kembali ke posisi awal
+        // ==============================
+        // ROD KEMBALI
+        // ==============================
+
         if (rod != null && !rodPulling)
         {
             rod.localRotation = Quaternion.Slerp(
@@ -70,19 +78,41 @@ public class fishing : MonoBehaviour
             return;
 
 
-        // ====================================
+        // Pastikan ikan masih ada
+        if (caughtFish == null)
+        {
+            EndFishing();
+            return;
+        }
+
+
+        // ==============================
         // SLIDER TURUN
-        // ====================================
+        // ==============================
 
         fishingSlider.value -=
             caughtFish.sliderDrainSpeed * Time.deltaTime;
 
 
-        // ====================================
-        // TAP
-        // ====================================
+        // ==============================
+        // STRIKE
+        // ==============================
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        bool strike = false;
+
+        if (player1)
+        {
+            // P1 = Q
+            strike = Input.GetKeyDown(KeyCode.Q);
+        }
+        else
+        {
+            // P2 = M
+            strike = Input.GetKeyDown(KeyCode.M);
+        }
+
+
+        if (strike)
         {
             fishingSlider.value += tapPower;
 
@@ -90,9 +120,9 @@ public class fishing : MonoBehaviour
         }
 
 
-        // ====================================
+        // ==============================
         // IKAN LEPAS
-        // ====================================
+        // ==============================
 
         if (fishingSlider.value <= 0)
         {
@@ -101,9 +131,9 @@ public class fishing : MonoBehaviour
         }
 
 
-        // ====================================
+        // ==============================
         // IKAN BERHASIL
-        // ====================================
+        // ==============================
 
         if (fishingSlider.value >= 100)
         {
@@ -112,13 +142,13 @@ public class fishing : MonoBehaviour
         }
 
 
-        // ====================================
-        // FISHING KEMBALI KE POSISI AWAL
-        // ====================================
+        // ==============================
+        // PLAYER KEMBALI KE POSISI AWAL
+        // ==============================
 
         transform.position = Vector3.MoveTowards(
             transform.position,
-            startPosition,
+            fishingStartPosition,
             returnSpeed * Time.deltaTime
         );
     }
@@ -135,7 +165,12 @@ public class fishing : MonoBehaviour
             rodStartRotation *
             Quaternion.Euler(pullAngle, 0f, 0f);
 
-        Invoke(nameof(ReleaseRod), 0.15f);
+        CancelInvoke(nameof(ReleaseRod));
+
+        Invoke(
+            nameof(ReleaseRod),
+            0.15f
+        );
     }
 
 
@@ -147,20 +182,47 @@ public class fishing : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Sudah sedang fishing
         if (fishingActive)
             return;
 
-        if (collision.gameObject.TryGetComponent(
+
+        // Cari ikan
+        if (!collision.gameObject.TryGetComponent(
             out FishRandomMovement fish))
-        {
-            caughtFish = fish;
+            return;
 
-            fish.baited = true;
 
-            fish.transform.SetParent(transform);
+        // ==========================================
+        // IKAN SUDAH DIMILIKI PLAYER LAIN
+        // ==========================================
 
-            StartFishing();
-        }
+        if (fish.baited)
+            return;
+
+
+        // ==========================================
+        // SIMPAN POSISI SEBELUM FISHING
+        // ==========================================
+
+        fishingStartPosition = transform.position;
+
+
+        // ==========================================
+        // AMBIL IKAN
+        // ==========================================
+
+        caughtFish = fish;
+
+        fish.baited = true;
+
+        fish.currentFisher = this;
+
+        fish.transform.SetParent(transform);
+
+
+        // Mulai fishing
+        StartFishing();
     }
 
 
@@ -169,7 +231,9 @@ public class fishing : MonoBehaviour
         fishingActive = true;
 
         fishingSlider.value = startValue;
+
         fishingSlider.gameObject.SetActive(true);
+
 
         // Player tidak bisa bergerak
         if (playerMovement != null)
@@ -183,12 +247,29 @@ public class fishing : MonoBehaviour
     {
         fishingActive = false;
 
+
+        // ==========================================
+        // LEPASKAN IKAN
+        // ==========================================
+
         if (caughtFish != null)
         {
             caughtFish.baited = false;
+
+            caughtFish.currentFisher = null;
+
             caughtFish.transform.SetParent(null);
+
             caughtFish = null;
         }
+
+
+        // ==========================================
+        // KEMBALIKAN PLAYER KE POSISI AWAL
+        // ==========================================
+
+        transform.position = fishingStartPosition;
+
 
         EndFishing();
     }
@@ -198,16 +279,34 @@ public class fishing : MonoBehaviour
     {
         fishingActive = false;
 
+
+        // ==========================================
+        // DAPAT IKAN
+        // ==========================================
+
         if (caughtFish != null)
         {
             Debug.Log(
                 "Ikan didapat! Score: "
                 + caughtFish.score
             );
+
+
             score += caughtFish.score;
+
+
             Destroy(caughtFish.gameObject);
+
             caughtFish = null;
         }
+
+
+        // ==========================================
+        // KEMBALIKAN PLAYER
+        // ==========================================
+
+        transform.position = fishingStartPosition;
+
 
         EndFishing();
     }
@@ -215,7 +314,15 @@ public class fishing : MonoBehaviour
 
     private void EndFishing()
     {
-        fishingSlider.gameObject.SetActive(false);
+        fishingActive = false;
+
+
+        // Sembunyikan slider
+        if (fishingSlider != null)
+        {
+            fishingSlider.gameObject.SetActive(false);
+        }
+
 
         // Player bisa bergerak lagi
         if (playerMovement != null)
@@ -223,6 +330,12 @@ public class fishing : MonoBehaviour
             playerMovement.enabled = true;
         }
 
+
+        // Rod berhenti ditarik
         rodPulling = false;
+
+
+        // Batalkan Invoke rod
+        CancelInvoke(nameof(ReleaseRod));
     }
 }

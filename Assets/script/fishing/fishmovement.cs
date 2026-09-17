@@ -17,11 +17,14 @@ public class FishRandomMovement : MonoBehaviour
     public float resistanceInterval = 1f;
     public float sliderDrainSpeed = 10f;
 
-    private Vector3 moveDirection;
-
+    [Header("Fish")]
     public bool baited = false;
     public Transform mouth;
 
+    // Player yang sedang memancing ikan ini
+    public fishing currentFisher;
+
+    private Vector3 moveDirection;
     private float resistanceTimer;
 
 
@@ -40,11 +43,15 @@ public class FishRandomMovement : MonoBehaviour
     {
         if (!baited)
         {
-            // Gerakan normal ikan
+            // ==============================
+            // GERAKAN NORMAL IKAN
+            // ==============================
+
+            moveDirection.y = Mathf.Clamp(moveDirection.y, -0.5f, 0.5f);
+
             transform.position +=
                 moveDirection * moveSpeed * Time.deltaTime;
 
-            // Menghadap arah gerak
             if (moveDirection != Vector3.zero)
             {
                 Quaternion targetRotation =
@@ -59,7 +66,10 @@ public class FishRandomMovement : MonoBehaviour
         }
         else
         {
-            // Ikan sedang melawan
+            // ==============================
+            // IKAN SEDANG DIPANCING
+            // ==============================
+
             resistanceTimer += Time.deltaTime;
 
             if (resistanceTimer >= resistanceInterval)
@@ -73,18 +83,19 @@ public class FishRandomMovement : MonoBehaviour
 
     private void ResistFishing()
     {
-        // Gerakkan BAIT/FISHING, bukan ikan
-        if (transform.parent != null)
-        {
-            Vector3 direction =
-                Random.insideUnitSphere.normalized;
+        // Pastikan masih ada player yang memancing
+        if (currentFisher == null)
+            return;
 
-            direction.y *= 0.5f;
-            direction.Normalize();
+        // Gerakkan bait/player yang sedang memancing
+        Vector3 direction =
+            Random.insideUnitSphere.normalized;
 
-            transform.parent.position +=
-                direction * resistanceSpeed;
-        }
+        direction.y *= 0.5f;
+        direction.Normalize();
+
+        currentFisher.transform.position +=
+            direction * resistanceSpeed;
     }
 
 
@@ -93,21 +104,18 @@ public class FishRandomMovement : MonoBehaviour
         switch (fishingDifficulty)
         {
             case 1:
-                // Mudah
                 resistanceSpeed = 0.2f;
                 resistanceInterval = 1.5f;
                 sliderDrainSpeed = 7f;
                 break;
 
             case 2:
-                // Sedang
                 resistanceSpeed = 0.35f;
                 resistanceInterval = 1f;
                 sliderDrainSpeed = 10f;
                 break;
 
             case 3:
-                // Sulit
                 resistanceSpeed = 0.5f;
                 resistanceInterval = 0.6f;
                 sliderDrainSpeed = 14f;
@@ -118,21 +126,23 @@ public class FishRandomMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!baited)
-        {
-            Vector3 normal =
-                collision.contacts[0].normal;
+        // Kalau ikan sedang dipancing,
+        // jangan lakukan pantulan dari collision
+        if (baited)
+            return;
 
-            moveDirection =
-                Vector3.Reflect(
-                    moveDirection,
-                    normal
-                );
+        Vector3 normal =
+            collision.contacts[0].normal;
 
-            moveDirection +=
-                Random.insideUnitSphere * 0.2f;
+        moveDirection =
+            Vector3.Reflect(
+                moveDirection,
+                normal
+            );
 
-            moveDirection.Normalize();
-        }
+        moveDirection +=
+            Random.insideUnitSphere * 0.2f;
+
+        moveDirection.Normalize();
     }
 }
